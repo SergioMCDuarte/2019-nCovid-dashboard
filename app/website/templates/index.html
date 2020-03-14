@@ -1,0 +1,48 @@
+{% extends "base_new.html" %}
+{% block content %}
+<div class="jumbotron bg-light">
+  <div class="text-center alert alert-primary">
+    <h2>World Overview</h2>
+  </div>
+  <div style="width: 100%; overflow: hidden;">
+      <div style="width: 300px; float: left;">
+        <h4 class="text-center alert alert-primary" style="width: 18rem;">Summary</h4>
+
+        <div class="card" style="width: 18rem; height: 9rem;">
+          <span class="badge badge-warning">
+            <div class="card-body text-center">
+              <h4 class="card-title">Total Confirmed</h4>
+              <br>
+              <h5>{{df.sum()['Confirmed']}}</h5>
+              <br>
+            </div>
+          </span>
+        </div>
+        <div class="card" style="width: 18rem; height: 9rem;">
+          <span class="badge badge-danger">
+            <div class="card-body text-center">
+              <h4 class="card-title">Total Deaths</h4>
+              <br>
+              <h5>{{df.sum()['Deaths']}}</h5>
+              <br>
+            </div>
+          </span>
+        </div>
+        <div class="card" style="width: 18rem; height: 9rem;">
+          <span class="badge badge-success">
+            <div class="card-body text-center">
+              <h4 class="card-title">Total Recovered</h4>
+              <br>
+              <h5>{{df.sum()['Recovered']}}</h5>
+              <br>
+            </div>
+          </span>
+        </div>
+      </div>
+      <div style="margin-left: 310px; ">
+        <h4 class="text-center alert alert-primary">Confirmed cases as of {{ date }}</h4>
+        {{ fig_html | safe }}
+      </div>
+  </div>
+</div>
+{% endblock %}

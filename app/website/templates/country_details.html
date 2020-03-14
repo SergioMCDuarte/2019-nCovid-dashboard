@@ -1,0 +1,27 @@
+{% extends "base_new.html" %}
+{% block content %}
+<div class="jumbotron bg-light">
+  <br>
+  <div class="container">
+    <h1>{{ country }}</h1>
+    <h3>Total Number of Confirmed Cases</h3>
+  </div>
+  <div class="chart" id="country_total">
+    <script>
+        var graphs = {{plot_totals | safe}};
+        Plotly.plot('country_total',graphs,{});
+    </script>
+  </div>
+  <hr class="my-4">
+  <br>
+  <div class="container">
+    <h3>New Confirmed Cases</h3>
+  </div>
+  <div class="chart" id="chinavsrothw_diff">
+    <script>
+        var graphs = {{plot_diff | safe}};
+        Plotly.plot('chinavsrothw_diff',graphs,{});
+    </script>
+  </div>
+</div>
+{% endblock %}

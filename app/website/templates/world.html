@@ -1,0 +1,43 @@
+{% extends "base_new.html" %}
+{% block content %}
+<div class="container">
+  <div class="jumbotron bg-light">
+    <br>
+    <table class="table table-bordered">
+      <thead>
+        <tr">
+          <th scope="col">Country</th>
+          <th scope="col" colspan="1" class="text-center">Confirmed Cases</th>
+          <th scope="col" colspan="2" class="text-center">Deaths</th>
+          <th scope="col" colspan="2" class="text-center">Recovered</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="table-primary">
+          <th scope="row">Global</th>
+          <td class="text-center">{{df.sum()['Confirmed']}}</td>
+
+          <td class="text-center">{{df.sum()['Deaths']}}</td>
+          <td class="text-center">{{'{:.2f} %'.format((df.sum()['Deaths'] / df.sum()['Confirmed']) * 100)}}</td>
+
+          <td class="text-center">{{df.sum()['Recovered']}}</td>
+          <td class="text-center">{{'{:.2f} %'.format((df.sum()['Recovered'] / df.sum()['Confirmed']) * 100)}}</td>
+
+        </tr>
+        {% for row in df.sort_values('Confirmed', ascending=False).iterrows() %}
+          <tr>
+            <th scope="row">{{row[0]}}</th>
+            <td class="text-center">{{row[1]['Confirmed']}}</td>
+
+            <td class="text-center">{{row[1]['Deaths']}}</td>
+            <td class="text-center">{{'{:.2f} %'.format((row[1]['Deaths'] / row[1]['Confirmed']) * 100)}}</td>
+
+            <td class="text-center">{{row[1]['Recovered']}}</td>
+            <td class="text-center">{{'{:.2f} %'.format((row[1]['Recovered'] / row[1]['Confirmed']) * 100)}}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
