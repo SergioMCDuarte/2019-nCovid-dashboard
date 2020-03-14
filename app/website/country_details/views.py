@@ -5,23 +5,22 @@ import plotly.graph_objs as go
 import pandas as pd
 import numpy as np
 import json
+data_path = '../../COVID-19/csse_covid_19_data/csse_covid_19_time_series/'
 
 def create_plot(country):
 
     df_confirmed = pd\
-                .read_csv('../COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv')
+                .read_csv(data_path+'time_series_19-covid-Confirmed.csv')
 
     df_confirmed\
         .drop(['Province/State', 'Lat', 'Long'], inplace=True, axis=1)
 
-    df_deaths = pd.read_csv(
-        '../COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv')
+    df_deaths = pd.read_csv(data_path+'time_series_19-covid-Deaths.csv')
 
     df_deaths\
         .drop(['Province/State', 'Lat', 'Long'], inplace=True, axis=1)
 
-    df_recovered = pd.read_csv(
-        '../COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv')
+    df_recovered = pd.read_csv(data_path+'time_series_19-covid-Recovered.csv')
 
     df_recovered\
         .drop(['Province/State', 'Lat', 'Long'], inplace=True, axis=1)

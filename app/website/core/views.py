@@ -6,10 +6,13 @@ import pandas as pd
 import numpy as np
 import json
 from datetime import datetime as dt, timedelta as td
+import os
+#print(os.getcwd())
+data_path = '../../COVID-19/csse_covid_19_data/csse_covid_19_time_series/'
 
 def world_map():
     df_confirmed = pd\
-                .read_csv('../COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv')
+                .read_csv(data_path+'time_series_19-covid-Confirmed.csv')
 
     df_confirmed.fillna(value='N/A',axis=1, inplace=True)
     df_confirmed['Province/State'] = df_confirmed.apply(
@@ -41,16 +44,13 @@ def index():
 
     date = (dt.now() - td(days=1)).strftime('%-m/%-d/%y')
 
-    df_confirmed = pd.read_csv(
-        '../COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv',
+    df_confirmed = pd.read_csv(data_path+'time_series_19-covid-Confirmed.csv',
         usecols=['Country/Region', date]).groupby('Country/Region').sum()
 
-    df_deaths = pd.read_csv(
-        '../COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv',
+    df_deaths = pd.read_csv(data_path+'time_series_19-covid-Deaths.csv',
         usecols=['Country/Region', date]).groupby('Country/Region').sum()
 
-    df_recovered = pd.read_csv(
-        '../COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv',
+    df_recovered = pd.read_csv(data_path+'time_series_19-covid-Recovered.csv',
         usecols=['Country/Region', date]).groupby('Country/Region').sum()
 
     df = pd.DataFrame()
