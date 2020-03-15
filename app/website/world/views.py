@@ -14,8 +14,11 @@ def world_page():
     countries_df = pd.read_csv('../countries.csv')
     countries = countries_df.columns.tolist()
 
+    df = pd.read_csv(data_path+'time_series_19-covid-Confirmed.csv')
+    date = (dt.now() - td(days=1)).strftime('%-m/%-d/%y') if \
+                    (dt.now() - td(days=1)).strftime('%-m/%-d/%y') in df.columns \
+                    else list(df.columns)[-1]
 
-    date = (dt.now() - td(days=1)).strftime('%-m/%-d/%y')
 
     df_confirmed = pd.read_csv(data_path+'time_series_19-covid-Confirmed.csv',
         usecols=['Country/Region', date]).groupby('Country/Region').sum()

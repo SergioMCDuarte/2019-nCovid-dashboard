@@ -20,7 +20,10 @@ def world_map():
                         axis=1
                     )
 
-    date = (dt.now() - td(days=1)).strftime('%-m/%-d/%y')
+    # use today's value if present, else use last update value
+    date = (dt.now() - td(days=1)).strftime('%-m/%-d/%y') if \
+                    (dt.now() - td(days=1)).strftime('%-m/%-d/%y') in df_confirmed.columns \
+                    else list(df_confirmed.columns)[-1]
 
     fig = px.scatter_geo(df_confirmed, lat="Lat", lon='Long', color="Country/Region",
                          hover_name="Province/State", size=date,
@@ -41,8 +44,6 @@ def index():
 
     countries_df = pd.read_csv('../countries.csv')
     countries = countries_df.columns.tolist()
-
-    date = (dt.now() - td(days=1)).strftime('%-m/%-d/%y')
 
     df_confirmed = pd.read_csv(data_path+'time_series_19-covid-Confirmed.csv',
         usecols=['Country/Region', date]).groupby('Country/Region').sum()
