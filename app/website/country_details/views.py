@@ -4,6 +4,9 @@ import plotly.graph_objs as go
 
 import pandas as pd
 import numpy as np
+from scipy.optimize import curve_fit
+from datetime import datetime as dt, timedelta as td
+import math
 import json
 data_path = '../../COVID-19/csse_covid_19_data/csse_covid_19_time_series/'
 
@@ -34,6 +37,41 @@ def create_plot(country):
     deaths_df_country = df_deaths_grouped[country]
     recovered_df_country = df_recovered_grouped[country]
 
+    # --- Forecast --- #
+    def logistic_func(X,L=1,k=1,x0=0):
+        y = []
+        for x in X:
+            y.append(L/(1+math.exp(-k*(x-x0))))
+        return y
+
+    forecast_days = 5
+
+    forecast_dt = []
+    for day in range(forecast_days):
+        forecast_dt.append(
+            (dt.strptime(confirmed_df_country[confirmed_df_country.values>0].index.tolist()[-1],'%m/%d/%y')\
+            +td(days=(day+1))).strftime('%-m/%-d/%y'))
+
+    x_dt = confirmed_df_country[confirmed_df_country.values>0].index.tolist() + forecast_dt
+
+
+    x = [x for x in range(len(confirmed_df_country[confirmed_df_country.values>0]))]
+    x_forecast = [x for x in range(len(confirmed_df_country[confirmed_df_country.values>0])+forecast_days)]
+    y = confirmed_df_country[confirmed_df_country.values>0].values
+
+    popt, pcov = curve_fit(logistic_func, x, y, p0=[max(y), 1, len(y)/2], maxfev=10000)
+    _tmp = logistic_func(x_forecast,popt[0],popt[1],popt[2])
+    y_forecast = [int(y) for y in _tmp]
+
+    if (np.isinf(pcov)).any():
+        x_dt = x_dt[0],
+        y_forecast = [0]
+        name = 'Forecast not Available'
+    else:
+        name = '5 day Forecast - Confirmed Cases'
+
+    #------------------#
+
     trace0 = go.Scatter(
                     x = confirmed_df_country[confirmed_df_country.values>0].index,
                     y = confirmed_df_country[confirmed_df_country.values>0].values,
@@ -52,8 +90,14 @@ def create_plot(country):
                     line={"dash": "dot"},
                     name="Recovered"
                     )
+    trace3 = go.Scatter(
+                    x = x_dt,
+                    y = y_forecast,
+                    line={"dash": "dashdot"},
+                    name=name
+                    )
 
-    data_totals = [trace0, trace1, trace2]
+    data_totals = [trace0, trace1, trace2, trace3]
 
     graphJSON_totals = json.dumps(data_totals, cls=plotly.utils.PlotlyJSONEncoder)
 
