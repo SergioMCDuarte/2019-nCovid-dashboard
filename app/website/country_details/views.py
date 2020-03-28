@@ -9,22 +9,20 @@ from datetime import datetime as dt, timedelta as td
 import math
 import json
 import csv
-data_path = '../../COVID-19/csse_covid_19_data/csse_covid_19_time_series/'
 
 def create_plot(country):
 
-    df_confirmed = pd\
-                .read_csv(data_path+'time_series_covid19_confirmed_global.csv')
+    df_confirmed = pd.read_parquet('website/static/confirmed.parquet')
 
     df_confirmed\
         .drop(['Province/State', 'Lat', 'Long'], inplace=True, axis=1)
 
-    df_deaths = pd.read_csv(data_path+'time_series_covid19_deaths_global.csv')
+    df_deaths = pd.read_parquet('website/static/deaths.parquet')
 
     df_deaths\
         .drop(['Province/State', 'Lat', 'Long'], inplace=True, axis=1)
 
-    df_recovered = pd.read_csv(data_path+'time_series_covid19_recovered_global.csv')
+    df_recovered = pd.read_parquet('website/static/recovered.parquet')
 
     df_recovered\
         .drop(['Province/State', 'Lat', 'Long'], inplace=True, axis=1)

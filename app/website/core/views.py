@@ -8,8 +8,8 @@ import json
 from datetime import datetime as dt, timedelta as td
 import os
 import codecs
+import requests
 #print(os.getcwd())
-data_path = '../../COVID-19/csse_covid_19_data/csse_covid_19_time_series/'
 
 core = Blueprint('core', __name__)
 
@@ -28,14 +28,14 @@ def index():
         for line in csvfile:
             countries.append(line.split('\n')[0].replace('\"',''))
 
-    df_confirmed = pd.read_csv(data_path+'time_series_covid19_confirmed_global.csv',
-        usecols=['Country/Region', date]).groupby('Country/Region').sum()
+    df_confirmed = pd.read_parquet('website/static/confirmed.parquet',
+        columns=['Country/Region', date]).groupby('Country/Region').sum()
 
-    df_deaths = pd.read_csv(data_path+'time_series_covid19_deaths_global.csv',
-        usecols=['Country/Region', date]).groupby('Country/Region').sum()
+    df_deaths = pd.read_parquet('website/static/deaths.parquet',
+        columns=['Country/Region', date]).groupby('Country/Region').sum()
 
-    df_recovered = pd.read_csv(data_path+'time_series_covid19_recovered_global.csv',
-        usecols=['Country/Region', date]).groupby('Country/Region').sum()
+    df_recovered = pd.read_parquet('website/static/recovered.parquet',
+        columns=['Country/Region', date]).groupby('Country/Region').sum()
 
     df = pd.DataFrame()
     df['Confirmed'] = df_confirmed[date]
@@ -54,5 +54,27 @@ def info():
     with open('../countries.csv','r') as csvfile:
         for line in csvfile:
             countries.append(line.split('\n')[0].replace('\"',''))
-            
+
     return render_template('info.html', countries=sorted(countries))
+
+@core.route('/search', methods=["GET", "POST"])
+def search():
+    countries = []
+    with open('../countries.csv','r') as csvfile:
+        for line in csvfile:
+            countries.append(line.split('\n')[0].replace('\"',''))
+
+    query = [item for item in request.args.items()][0][1]
+
+    possible_query = []
+
+    for country in countries:
+        if query.lower() in country.lower():
+            possible_query.append(country)
+
+    if len(possible_query) < 1:
+        return render_template('country_not_found.html')
+    elif len(possible_query) == 1:
+        return redirect(url_for('country_details.country_details_page', country=possible_query[0]))
+    else:
+        return render_template('search.html', countries=sorted(countries), possible_query=possible_query)

@@ -30,7 +30,7 @@
             <a class="nav-link" href="{{ url_for('world.world_page') }}">World Totals <span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item active">
-            <a class="nav-link" href="{{ url_for('china_evolution.china_evolution_page') }}">China Comparison</a>
+            <a class="nav-link" href="{{ url_for('world_evolution.world_evolution_page') }}">World Evolution</a>
           </li>
           <li class="nav-item dropdown active">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -47,8 +47,8 @@
             <a class="nav-link" href="{{ url_for('core.info') }}">Info</a>
           </li>
         </ul>
-        <form class="form-inline my-2 my-lg-0">
-          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+        <form class="form-inline my-2 my-lg-0" action="{{ url_for('core.search') }}">
+          <input class="form-control mr-sm-2" name="search" type="search" placeholder="Search" aria-label="Search">
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
       </div>

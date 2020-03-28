@@ -13,8 +13,18 @@ data_path = '../COVID-19/csse_covid_19_data/csse_covid_19_time_series/'
 #time_series_covid19_deaths_global.csv
 #time_series_covid19_recovered_global.csv
 
+pd.read_csv(data_path+'time_series_covid19_confirmed_global.csv')\
+    .to_parquet('app/website/static/confirmed.parquet')
+
+pd.read_csv(data_path+'time_series_covid19_deaths_global.csv')\
+    .to_parquet('app/website/static/deaths.parquet')
+
+pd.read_csv(data_path+'time_series_covid19_recovered_global.csv')\
+    .to_parquet('app/website/static/recovered.parquet')
+
+
 def world_map():
-    df_confirmed = pd.read_csv(data_path+'time_series_covid19_confirmed_global.csv')
+    df_confirmed = pd.read_parquet('app/website/static/confirmed.parquet')
 
     df_confirmed.fillna(value='N/A',axis=1, inplace=True)
     df_confirmed['Province/State'] = df_confirmed.apply(

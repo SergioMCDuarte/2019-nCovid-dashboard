@@ -1,0 +1,20 @@
+{% extends "base_new.html" %}
+{% block content %}
+
+<div class="container text-center  col-2">
+  <br>
+  <div class="jumbotron bg-light">
+    <table class="table table-bordered">
+      <tbody>
+        {% for country in possible_query %}
+          <tr>
+            <th scope="row">
+              <a href="{{url_for('country_details.country_details_page', country=country)}}">{{country}}</a>
+            </th>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
