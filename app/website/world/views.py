@@ -38,4 +38,4 @@ def world_page():
 
     return render_template('world.html',
                             df=df,
-                            countries=countries)
+                            countries=sorted(countries))

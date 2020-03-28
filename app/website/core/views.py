@@ -54,4 +54,4 @@ def info():
     with open('../countries.csv','r') as csvfile:
         for line in csvfile:
             countries.append(line.split('\n')[0])
-    return render_template('info.html', countries=countries)
+    return render_template('info.html', countries=sorted(countries))

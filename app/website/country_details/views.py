@@ -146,4 +146,4 @@ def country_details_page(country):
                             plot_totals=plot_totals,
                             plot_diff=plot_diff,
                             country=country,
-                            countries=countries)
+                            countries=sorted(countries))

@@ -143,4 +143,4 @@ def china_evolution_page():
                             plot_totals=plot_totals,
                             plot_diff=plot_diff,
                             plot_growth=plot_growth,
-                            countries=countries)
+                            countries=sorted(countries))
