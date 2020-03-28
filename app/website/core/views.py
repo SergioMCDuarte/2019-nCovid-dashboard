@@ -46,7 +46,7 @@ def index():
                             date=dt.strptime(date,'%m/%d/%y').strftime('%A, %d, %B, %Y'),
                             fig_html=fig_html,
                             df=df,
-                            countries=countries)
+                            countries=sorted(countries))
 
 @core.route('/info')
 def info():
