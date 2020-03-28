@@ -4,7 +4,7 @@ import csv
 
 data_path = '../COVID-19/csse_covid_19_data/csse_covid_19_time_series/'
 
-df= pd.read_csv(data_path+'time_series_19-covid-Confirmed.csv')
+df= pd.read_csv(data_path+'time_series_covid19_confirmed_global.csv')
 
 countries = []
 for country in df['Country/Region']:
