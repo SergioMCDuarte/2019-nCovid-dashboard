@@ -45,7 +45,7 @@ def create_plot(country):
             y.append(L/(1+math.exp(-k*(x-x0))))
         return y
 
-    forecast_days = 10
+    forecast_days = 5
 
     forecast_dt = []
     for day in range(forecast_days):
