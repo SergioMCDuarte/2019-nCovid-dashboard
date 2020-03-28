@@ -128,3 +128,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 COVID-19/
+
+app/website/static/
