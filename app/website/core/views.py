@@ -23,8 +23,10 @@ def index():
 
     date = (dt.now() - td(days=1)).strftime('%-m/%-d/%y')
 
-    countries_df = pd.read_csv('../countries.csv')
-    countries = countries_df.columns.tolist()
+    countries = []
+    with open('../countries.csv','r') as csvfile:
+        for line in csvfile:
+            countries.append(line.split('\n')[0])
 
     df_confirmed = pd.read_csv(data_path+'time_series_covid19_confirmed_global.csv',
         usecols=['Country/Region', date]).groupby('Country/Region').sum()
