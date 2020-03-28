@@ -26,7 +26,7 @@ def index():
     countries = []
     with open('../countries.csv','r') as csvfile:
         for line in csvfile:
-            countries.append(line.split('\n')[0])
+            countries.append(line.split('\n')[0].replace('\"',''))
 
     df_confirmed = pd.read_csv(data_path+'time_series_covid19_confirmed_global.csv',
         usecols=['Country/Region', date]).groupby('Country/Region').sum()
@@ -53,5 +53,6 @@ def info():
     countries = []
     with open('../countries.csv','r') as csvfile:
         for line in csvfile:
-            countries.append(line.split('\n')[0])
+            countries.append(line.split('\n')[0].replace('\"',''))
+            
     return render_template('info.html', countries=sorted(countries))

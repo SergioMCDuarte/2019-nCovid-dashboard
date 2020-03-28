@@ -136,7 +136,7 @@ def china_evolution_page():
     countries = []
     with open('../countries.csv','r') as csvfile:
         for line in csvfile:
-            countries.append(line.split('\n')[0])
+            countries.append(line.split('\n')[0].replace('\"',''))
 
     plot_totals, plot_diff, plot_growth = create_plot()
     return render_template('china_evolution.html',

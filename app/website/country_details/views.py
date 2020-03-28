@@ -135,7 +135,7 @@ def country_details_page(country):
     countries = []
     with open('../countries.csv','r') as csvfile:
         for line in csvfile:
-            countries.append(line.split('\n')[0])
+            countries.append(line.split('\n')[0].replace('\"',''))
 
     if country not in countries:
         return redirect(url_for('core.index'))

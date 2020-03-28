@@ -14,7 +14,7 @@ def world_page():
     countries = []
     with open('../countries.csv','r') as csvfile:
         for line in csvfile:
-            countries.append(line.split('\n')[0])
+            countries.append(line.split('\n')[0].replace('\"',''))
 
     df = pd.read_csv(data_path+'time_series_covid19_confirmed_global.csv')
     date = (dt.now() - td(days=1)).strftime('%-m/%-d/%y') if \
