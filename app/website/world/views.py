@@ -11,22 +11,24 @@ world = Blueprint('world', __name__)
 
 @world.route('/world')
 def world_page():
-    countries_df = pd.read_csv('../countries.csv')
-    countries = countries_df.columns.tolist()
+    countries = []
+    with open('../countries.csv','r') as csvfile:
+        for line in csvfile:
+            countries.append(line.split('\n')[0])
 
-    df = pd.read_csv(data_path+'time_series_19-covid-Confirmed.csv')
+    df = pd.read_csv(data_path+'time_series_covid19_confirmed_global.csv')
     date = (dt.now() - td(days=1)).strftime('%-m/%-d/%y') if \
                     (dt.now() - td(days=1)).strftime('%-m/%-d/%y') in df.columns \
                     else list(df.columns)[-1]
 
 
-    df_confirmed = pd.read_csv(data_path+'time_series_19-covid-Confirmed.csv',
+    df_confirmed = pd.read_csv(data_path+'time_series_covid19_confirmed_global.csv',
         usecols=['Country/Region', date]).groupby('Country/Region').sum()
 
-    df_deaths = pd.read_csv(data_path+'time_series_19-covid-Deaths.csv',
+    df_deaths = pd.read_csv(data_path+'time_series_covid19_deaths_global.csv',
         usecols=['Country/Region', date]).groupby('Country/Region').sum()
 
-    df_recovered = pd.read_csv(data_path+'time_series_19-covid-Recovered.csv',
+    df_recovered = pd.read_csv(data_path+'time_series_covid19_recovered_global.csv',
         usecols=['Country/Region', date]).groupby('Country/Region').sum()
 
     df = pd.DataFrame()

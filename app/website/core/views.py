@@ -7,51 +7,32 @@ import numpy as np
 import json
 from datetime import datetime as dt, timedelta as td
 import os
+import codecs
 #print(os.getcwd())
 data_path = '../../COVID-19/csse_covid_19_data/csse_covid_19_time_series/'
-
-def world_map():
-    df_confirmed = pd\
-                .read_csv(data_path+'time_series_19-covid-Confirmed.csv')
-
-    df_confirmed.fillna(value='N/A',axis=1, inplace=True)
-    df_confirmed['Province/State'] = df_confirmed.apply(
-                        lambda row: row['Province/State'] if row['Province/State']!='N/A' else row['Country/Region'],
-                        axis=1
-                    )
-
-    # use today's value if present, else use last update value
-    date = (dt.now() - td(days=1)).strftime('%-m/%-d/%y') if \
-                    (dt.now() - td(days=1)).strftime('%-m/%-d/%y') in df_confirmed.columns \
-                    else list(df_confirmed.columns)[-1]
-
-    fig = px.scatter_geo(df_confirmed, lat="Lat", lon='Long', color="Country/Region",
-                         hover_name="Province/State", size=date,
-                         projection="natural earth",
-                         size_max=50)
-
-    fig_html = fig.to_html(include_plotlyjs='cdn')
-
-    return date, fig_html
 
 core = Blueprint('core', __name__)
 
 @core.route('/')
 def index():
 
-    if 'fig_html' not in locals() or date != (dt.now() - td(days=1)).strftime('%-m/%-d/%y'):
-        date,fig_html = world_map()
+    basedir = os.getcwd()
+
+    file = codecs.open(basedir+'/website/static/world_map.html', "r", "utf-8")
+    fig_html = file.read()
+
+    date = (dt.now() - td(days=1)).strftime('%-m/%-d/%y')
 
     countries_df = pd.read_csv('../countries.csv')
     countries = countries_df.columns.tolist()
 
-    df_confirmed = pd.read_csv(data_path+'time_series_19-covid-Confirmed.csv',
+    df_confirmed = pd.read_csv(data_path+'time_series_covid19_confirmed_global.csv',
         usecols=['Country/Region', date]).groupby('Country/Region').sum()
 
-    df_deaths = pd.read_csv(data_path+'time_series_19-covid-Deaths.csv',
+    df_deaths = pd.read_csv(data_path+'time_series_covid19_deaths_global.csv',
         usecols=['Country/Region', date]).groupby('Country/Region').sum()
 
-    df_recovered = pd.read_csv(data_path+'time_series_19-covid-Recovered.csv',
+    df_recovered = pd.read_csv(data_path+'time_series_covid19_recovered_global.csv',
         usecols=['Country/Region', date]).groupby('Country/Region').sum()
 
     df = pd.DataFrame()
@@ -67,6 +48,8 @@ def index():
 
 @core.route('/info')
 def info():
-    countries_df = pd.read_csv('../countries.csv')
-    countries = countries_df.columns.tolist()
+    countries = []
+    with open('../countries.csv','r') as csvfile:
+        for line in csvfile:
+            countries.append(line.split('\n')[0])
     return render_template('info.html', countries=countries)

@@ -8,22 +8,23 @@ from scipy.optimize import curve_fit
 from datetime import datetime as dt, timedelta as td
 import math
 import json
+import csv
 data_path = '../../COVID-19/csse_covid_19_data/csse_covid_19_time_series/'
 
 def create_plot(country):
 
     df_confirmed = pd\
-                .read_csv(data_path+'time_series_19-covid-Confirmed.csv')
+                .read_csv(data_path+'time_series_covid19_confirmed_global.csv')
 
     df_confirmed\
         .drop(['Province/State', 'Lat', 'Long'], inplace=True, axis=1)
 
-    df_deaths = pd.read_csv(data_path+'time_series_19-covid-Deaths.csv')
+    df_deaths = pd.read_csv(data_path+'time_series_covid19_deaths_global.csv')
 
     df_deaths\
         .drop(['Province/State', 'Lat', 'Long'], inplace=True, axis=1)
 
-    df_recovered = pd.read_csv(data_path+'time_series_19-covid-Recovered.csv')
+    df_recovered = pd.read_csv(data_path+'time_series_covid19_recovered_global.csv')
 
     df_recovered\
         .drop(['Province/State', 'Lat', 'Long'], inplace=True, axis=1)
@@ -44,7 +45,7 @@ def create_plot(country):
             y.append(L/(1+math.exp(-k*(x-x0))))
         return y
 
-    forecast_days = 5
+    forecast_days = 10
 
     forecast_dt = []
     for day in range(forecast_days):
@@ -68,7 +69,7 @@ def create_plot(country):
         y_forecast = [0]
         name = 'Forecast not Available'
     else:
-        name = '5 day Forecast - Confirmed Cases'
+        name = '{} day Forecast - Confirmed Cases'.format(forecast_days)
 
     #------------------#
 
@@ -115,10 +116,9 @@ def create_plot(country):
 
         past_value = row
 
-    trace1 = go.Scatter(
+    trace1 = go.Bar(
                     x = confirmed_df_country[confirmed_df_country.values>0].index,
                     y = diff_confirmed_country,
-                    line={"dash": "dot"},
                     name=country
                     )
 
@@ -126,44 +126,24 @@ def create_plot(country):
 
     graphJSON_diff = json.dumps(data_diff, cls=plotly.utils.PlotlyJSONEncoder)
 
-    growth_rate = []
-
-    for idx, row in enumerate(diff_confirmed_country):
-        if idx == 0:
-            growth_rate.append(0)
-            past_value = 0
-        else:
-            if past_value == 0:
-                growth_rate.append(0)
-            else:
-                growth_rate.append(row/past_value)
-
-        past_value = row
-
-        trace2 = go.Scatter(
-                        x = confirmed_df_country[confirmed_df_country.values>0].index,
-                        y = growth_rate,
-                        line={"dash": "dot"},
-                        name=country
-                        )
-
-        data_growth = [trace2]
-
-        graphJSON_growth = json.dumps(data_growth, cls=plotly.utils.PlotlyJSONEncoder)
-
-
-    return graphJSON_totals, graphJSON_diff, graphJSON_growth
+    return graphJSON_totals, graphJSON_diff
 
 country_details = Blueprint('country_details', __name__)
 
 @country_details.route('/country_details/<country>', methods=["GET"])
 def country_details_page(country):
-    plot_totals, plot_diff, plot_growth = create_plot(country)
-    countries_df = pd.read_csv('../countries.csv')
-    countries = countries_df.columns.tolist()
+    countries = []
+    with open('../countries.csv','r') as csvfile:
+        for line in csvfile:
+            countries.append(line.split('\n')[0])
+
+    if country not in countries:
+        return redirect(url_for('core.index'))
+
+    plot_totals, plot_diff = create_plot(country)
+
     return render_template('country_details.html',
                             plot_totals=plot_totals,
                             plot_diff=plot_diff,
-                            plot_growth=plot_growth,
                             country=country,
                             countries=countries)

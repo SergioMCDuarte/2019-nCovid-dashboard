@@ -8,7 +8,7 @@ data_path = '../../COVID-19/csse_covid_19_data/csse_covid_19_time_series/'
 
 def create_plot():
     df_confirmed = pd\
-                .read_csv(data_path+'time_series_19-covid-Confirmed.csv')
+                .read_csv(data_path+'time_series_covid19_confirmed_global.csv')
 
     df_confirmed\
         .drop(['Province/State', 'Lat', 'Long'], inplace=True, axis=1)
@@ -133,9 +133,12 @@ china_evolution = Blueprint('china_evolution', __name__)
 
 @china_evolution.route('/china_comparison')
 def china_evolution_page():
+    countries = []
+    with open('../countries.csv','r') as csvfile:
+        for line in csvfile:
+            countries.append(line.split('\n')[0])
+
     plot_totals, plot_diff, plot_growth = create_plot()
-    countries_df = pd.read_csv('../countries.csv')
-    countries = countries_df.columns.tolist()
     return render_template('china_evolution.html',
                             plot_totals=plot_totals,
                             plot_diff=plot_diff,
