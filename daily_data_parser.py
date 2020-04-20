@@ -37,8 +37,9 @@ def world_map():
                     (dt.now() - td(days=1)).strftime('%-m/%-d/%y') in df_confirmed.columns \
                     else list(df_confirmed.columns)[-1]
 
-
     df = df_confirmed[["Country/Region", "Province/State", "Lat", "Long", date]].dropna()
+
+    df.drop(df[df[date]<0].index, inplace=True)
 
     fig = px.scatter_geo(df, lat="Lat", lon='Long', color="Country/Region",
                          hover_name="Province/State", size=date,
