@@ -24,7 +24,7 @@ MarkupSafe==1.1.1
 numpy==1.18.1
 oauthlib==3.1.0
 pandas==1.0.1
-Pillow==7.0.0
+Pillow>=7.1.0
 plotly==4.5.4
 pyarrow==0.16.0
 pycparser==2.19
